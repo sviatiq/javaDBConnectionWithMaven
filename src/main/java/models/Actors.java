@@ -11,6 +11,11 @@ public class Actors {
     public Actors() {
     }
 
+    public Actors(String first_name, String last_name) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+    }
+
     public Actors(int actor_id, String first_name, String last_name, Date last_update) {
         this.actor_id = actor_id;
         this.first_name = first_name;

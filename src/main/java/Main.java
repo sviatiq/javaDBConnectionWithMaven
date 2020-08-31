@@ -2,18 +2,21 @@ import models.Actors;
 import models.Film;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     private static List<Actors> actorsList = new ArrayList();
     private static List<Film> filmList = new ArrayList();
+    private static Map<Actors, List<Film>> filmOfActorList = new HashMap<>();
+    private static List<Film> films = new ArrayList<>();
 
     private static final String GET_ACTORS = "SELECT * FROM actor";
     private static final String ADD_ACTOR = "INSERT INTO actor(first_name, last_name) VALUES(?,?)";
     private static final String GET_FILMS = "SELECT * FROM film";
     private static final String ADD_FILMS = "INSERT INTO film(title, description, release_year, language_id ) VALUES(?,?,?,?)";
+    private static final String FIND_FILM_OF_ACTOR = "SELECT first_name, last_name, title, description FROM film, film_actor, actor\n" +
+            "WHERE film.film_id = film_actor.film_id AND film_actor.actor_id = actor.actor_id AND first_name = 'GOLDIE'";
 
     private static Connection getConnection() throws SQLException {
         return DriverManager
@@ -71,12 +74,25 @@ public class Main {
         System.out.println(newFilmList);
     }
 
+    private static void getFilmOfActor(Connection connection) throws SQLException{
+        PreparedStatement findFilmOfActor = connection.prepareStatement(FIND_FILM_OF_ACTOR);
+        ResultSet resultSet = findFilmOfActor.executeQuery();
+
+        while(resultSet.next()){
+            films.add(new Film(resultSet.getString("title"), resultSet.getString("description")));
+            filmOfActorList.put(new Actors(
+                    resultSet.getString("first_name"),
+                    resultSet.getString("last_name")), films);
+        }
+            System.out.println(filmOfActorList);
+    }
     public static void main(String[] args) throws SQLException {
         Connection connection = getConnection();
-        addActors(connection);
-        getActors(connection);
-        addFilm(connection);
-        getFilms(connection);
+//        addActors(connection);
+//        getActors(connection);
+//        addFilm(connection);
+//        getFilms(connection);
+        getFilmOfActor(connection);
         connection.close();
     }
 }

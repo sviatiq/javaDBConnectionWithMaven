@@ -10,6 +10,11 @@ public class Film {
     public Film() {
     }
 
+    public Film(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
     public Film(int filmId, String title, String description, int year, int language_id) {
         this.filmId = filmId;
         this.title = title;
